@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AES"
+rootProject.name = "AndroidSymmetricCryptography"
 include(":app")
 include(":aes-library")
