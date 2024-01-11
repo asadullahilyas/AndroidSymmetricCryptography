@@ -58,10 +58,14 @@ afterEvaluate {
                 artifactId = "AndroidSymmetricEncryption"
                 version = artifactVersion
 
-//                from(components["java"])
+                from(components["java"])
             }
         }
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
