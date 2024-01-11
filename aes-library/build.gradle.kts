@@ -6,7 +6,7 @@ plugins {
     id("maven-publish")
 }
 
-val artifactVersion = "0.0.2"
+val artifactVersion = "0.0.3"
 val groupName = "com.github.asadullahilyas"
 
 group = groupName
