@@ -2,5 +2,5 @@ jdk:
   - openjdk17
 before_install:
   - ./scripts/prepareJitpackEnvironment.sh
-  - sdk install java
-  - sdk use java
+#  - sdk install java
+#  - sdk use java
