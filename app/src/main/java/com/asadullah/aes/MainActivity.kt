@@ -37,8 +37,6 @@ class MainActivity : ComponentActivity() {
             aes.decryptFile(secretKey, iv, encryptedFile, decryptedFile)
         }
 
-//        aes.generateAndSaveKeyInKeyStore()
-
         println("ENCRYPTION/DECRYPTION COMPLETED")
 
         setContent {

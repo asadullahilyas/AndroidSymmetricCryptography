@@ -1,7 +1,5 @@
 package com.asadullah.aes_library
 
-import android.security.keystore.KeyProperties
-import android.util.Base64
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -20,45 +18,21 @@ import javax.crypto.spec.SecretKeySpec
 
 class AES {
 
+    private val algo = "AES"
     private val cipherTransformation = "AES/CBC/PKCS7Padding"
 
-    /*private val iv = generateRandomIV()
-
-    fun generateAndSaveKeyInKeyStore() {
-        // Generate a secret key
-        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder("MySecretKey", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
-            .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-            .setUserAuthenticationRequired(false) // Adjust as needed
-            .setKeySize(256)
-            .build()
-        keyGenerator.init(keyGenParameterSpec)
-        val secretKey = keyGenerator.generateKey()
-
-        val testString = "This is my test string"
-        encryptString(secretKey, iv, testString).also { println(it) }
-        encryptString(secretKey, iv, testString).also { println(it) }
-        encryptString(secretKey, iv, testString).also { println(it) }
-
-        val keyStore = KeyStore.getInstance("AndroidKeyStore")
-        keyStore.load(null)
-        val secretKeyEntry = keyStore.getEntry("MySecretKey", null)
-        val retrievedSecretKey = (secretKeyEntry as KeyStore.SecretKeyEntry).secretKey
-    }*/
-
     private fun convertKeyToString(secretKey: SecretKey): String {
-        return Base64.encodeToString(secretKey.encoded, Base64.DEFAULT)
+        return secretKey.encoded.encodeToString()
     }
 
     private fun convertStringToKey(encodedKey: String): SecretKey {
-        val decodedKey = Base64.decode(encodedKey, Base64.DEFAULT)
-        return SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
+        val decodedKey = encodedKey.decodeToByteArray()
+        return SecretKeySpec(decodedKey, 0, decodedKey.size, algo)
     }
 
     fun generateSecretKey(): String {
         val secureRandom = SecureRandom()
-        val keyGen = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES)
+        val keyGen = KeyGenerator.getInstance(algo)
         keyGen.init(256, secureRandom)
         return convertKeyToString(keyGen.generateKey())
     }
@@ -66,24 +40,24 @@ class AES {
     fun generateRandomIV(): String {
         val random = SecureRandom()
         val generated: ByteArray = random.generateSeed(16)
-        return Base64.encodeToString(generated, Base64.DEFAULT)
+        return generated.encodeToString()
     }
 
     fun encryptString(secretKey: String, iv: String, text: String): String {
         val realSecretKey = convertStringToKey(secretKey)
         val cipher = Cipher.getInstance(cipherTransformation)
-        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+        val ivSpec = IvParameterSpec(iv.decodeToByteArray())
         cipher.init(Cipher.ENCRYPT_MODE, realSecretKey, ivSpec)
         val encryptedByteArray = cipher.doFinal(text.toByteArray(Charsets.UTF_8))
-        return Base64.encodeToString(encryptedByteArray, Base64.DEFAULT)
+        return encryptedByteArray.encodeToString()
     }
 
     fun decryptString(secretKey: String, iv: String, encryptedText: String): String {
         val realSecretKey = convertStringToKey(secretKey)
         val cipher = Cipher.getInstance(cipherTransformation)
-        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+        val ivSpec = IvParameterSpec(iv.decodeToByteArray())
         cipher.init(Cipher.DECRYPT_MODE, realSecretKey, ivSpec)
-        val encryptedBytes = Base64.decode(encryptedText, Base64.DEFAULT)
+        val encryptedBytes = encryptedText.decodeToByteArray()
         val plainTextByteArray = cipher.doFinal(encryptedBytes)
         return String(plainTextByteArray, Charsets.UTF_8)
     }
@@ -99,7 +73,7 @@ class AES {
         val fos = FileOutputStream(encryptedFile)
 
         val cipher = Cipher.getInstance(cipherTransformation)
-        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+        val ivSpec = IvParameterSpec(iv.decodeToByteArray())
         cipher.init(Cipher.ENCRYPT_MODE, realSecretKey, ivSpec)
 
         val cos = CipherOutputStream(fos, cipher)
@@ -124,7 +98,7 @@ class AES {
         val fos = FileOutputStream(outputFile)
 
         val cipher = Cipher.getInstance(cipherTransformation)
-        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
+        val ivSpec = IvParameterSpec(iv.decodeToByteArray())
         cipher.init(Cipher.DECRYPT_MODE, realSecretKey, ivSpec)
 
         val cis = CipherInputStream(fis, cipher)
