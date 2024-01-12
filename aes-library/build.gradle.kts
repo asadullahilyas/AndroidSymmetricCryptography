@@ -17,7 +17,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("maven") {
                 groupId = groupName
-                artifactId = "KotlinSymmetricEncryption"
+                artifactId = "KotlinSymmetricCryptography"
                 version = artifactVersion
 
                 from(components["java"])
