@@ -63,11 +63,11 @@ class AES {
     }
 
     @Throws(IOException::class, NoSuchAlgorithmException::class, NoSuchPaddingException::class, InvalidKeyException::class)
-    fun encryptFile(secretKey: String, iv: String, file: File): File {
+    fun encryptFile(secretKey: String, iv: String, file: File, outputFile: File? = null): File {
 
         val realSecretKey = convertStringToKey(secretKey)
 
-        val encryptedFile = File(file.parentFile, "${file.name}.crypt")
+        val encryptedFile = outputFile ?: File(file.parentFile, "${file.name}.crypt")
 
         val fis = FileInputStream(file)
         val fos = FileOutputStream(encryptedFile)
